@@ -33,6 +33,10 @@ const INITIAL_DEMO_TASKS: Task[] = [
   },
 ];
 
+function isDemoSession(userId: string): boolean {
+  return !userId || userId.startsWith('demo-') || !isSupabaseConfigured();
+}
+
 function getDemoTasks(userId: string): Task[] {
   if (typeof window === 'undefined') return [];
   const stored = localStorage.getItem(DEMO_TASKS_STORAGE_KEY);
@@ -58,7 +62,7 @@ export async function fetchTasks(userId: string): Promise<{ data: Task[]; error?
     return { data: [], error: 'User ID is required to fetch tasks.' };
   }
 
-  if (!isSupabaseConfigured()) {
+  if (isDemoSession(userId)) {
     const tasks = getDemoTasks(userId);
     return { data: tasks };
   }
@@ -101,7 +105,7 @@ export async function createTask(
     return { data: null, error: 'Authenticated user session is required.' };
   }
 
-  if (!isSupabaseConfigured()) {
+  if (isDemoSession(userId)) {
     const stored = localStorage.getItem(DEMO_TASKS_STORAGE_KEY);
     let allTasks: Task[] = [];
     try {
@@ -163,7 +167,7 @@ export async function updateTaskStatus(
     return { success: false, error: 'Task ID and User ID are required.' };
   }
 
-  if (!isSupabaseConfigured()) {
+  if (isDemoSession(userId)) {
     const stored = localStorage.getItem(DEMO_TASKS_STORAGE_KEY);
     let allTasks: Task[] = [];
     try {
