@@ -121,3 +121,4 @@ To ensure optimal speed, clarity, and reliability:
 - **Network Connection**: If working online with Supabase, ensure you have an active internet connection. If your connection drops, status updates will alert you with an error notice.
 - **Session Expiry**: If your Google session expires, sign out and sign back in to refresh your security credentials.
 - **Do Not Share Sensitive API Keys**: Keep database keys private. Never post internal configuration files to public forums.
+

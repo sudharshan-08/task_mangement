@@ -50,3 +50,4 @@ export const NotificationToast: React.FC<NotificationToastProps> = ({ toasts, on
     </div>
   );
 };
+

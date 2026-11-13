@@ -51,9 +51,13 @@ function LoginForm() {
     const errorParam = searchParams.get('error');
     if (errorParam) {
       if (errorParam === 'auth_callback_failed') {
-        setErrorMessage('Authentication callback failed. Please try signing in again.');
+        setErrorMessage('Authentication callback failed. Please check that http://localhost:3000/auth/callback is added to Redirect URLs in your Supabase dashboard.');
       } else {
-        setErrorMessage('Authentication error occurred. Please verify your credentials.');
+        try {
+          setErrorMessage(decodeURIComponent(errorParam));
+        } catch {
+          setErrorMessage(errorParam);
+        }
       }
     }
   }, [router, searchParams]);

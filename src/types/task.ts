@@ -34,3 +34,4 @@ export interface UserProfile {
   name?: string;
   avatar_url?: string;
 }
+

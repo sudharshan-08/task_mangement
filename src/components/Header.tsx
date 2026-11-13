@@ -104,3 +104,4 @@ export const Header: React.FC<HeaderProps> = ({ user, onLogout, isDemo = false }
     </header>
   );
 };
+

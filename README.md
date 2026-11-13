@@ -375,3 +375,4 @@ Deploying TaskFlow to Vercel requires under 5 minutes:
 3. **Tenant Boundary**: Each user strictly manages their own tasks; multi-tenant collaboration, workspace teams, and role hierarchies were intentionally excluded to align with assessment scope.
 4. **Mandatory vs Optional Fields**: Title is mandatory and validated; description is optional.
 5. **No Destructive Deletion in Mandatory Scope**: Task deletion and editing were kept outside mandatory scope per Section 10 guidelines.
+

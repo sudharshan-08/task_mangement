@@ -81,3 +81,4 @@ CREATE POLICY "Users can delete their own tasks"
     ON public.tasks
     FOR DELETE
     USING (auth.uid() = user_id);
+

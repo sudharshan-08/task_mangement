@@ -73,3 +73,4 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onStatusChange }) => {
     </div>
   );
 };
+
