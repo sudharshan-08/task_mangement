@@ -13,7 +13,6 @@ export const DEMO_USER: UserProfile = {
 
 export async function signInWithGoogle(): Promise<{ success: boolean; error?: string }> {
   if (!isSupabaseConfigured()) {
-    // If Supabase credentials are not configured yet, notify user or start demo
     return {
       success: false,
       error: 'Supabase credentials are not configured. Please add NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY to .env.local, or use Demo Mode to test.',
@@ -45,10 +44,71 @@ export async function signInWithGoogle(): Promise<{ success: boolean; error?: st
   }
 }
 
+export async function signInWithEmail(
+  email: string,
+  password: string
+): Promise<{ success: boolean; error?: string }> {
+  if (!isSupabaseConfigured()) {
+    return { success: false, error: 'Supabase credentials are not configured.' };
+  }
+
+  try {
+    const supabase = createClient();
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) {
+      return { success: false, error: error.message };
+    }
+
+    if (data.session) {
+      // Set session cookie for middleware
+      document.cookie = `sb-access-token=${data.session.access_token}; path=/; max-age=86400; SameSite=Lax`;
+    }
+
+    return { success: true };
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Failed to sign in with email.' };
+  }
+}
+
+export async function signUpWithEmail(
+  email: string,
+  password: string,
+  name?: string
+): Promise<{ success: boolean; error?: string }> {
+  if (!isSupabaseConfigured()) {
+    return { success: false, error: 'Supabase credentials are not configured.' };
+  }
+
+  try {
+    const supabase = createClient();
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          full_name: name || email.split('@')[0],
+          name: name || email.split('@')[0],
+        },
+      },
+    });
+
+    if (error) {
+      return { success: false, error: error.message };
+    }
+
+    return { success: true };
+  } catch (err: any) {
+    return { success: false, error: err.message || 'Failed to sign up with email.' };
+  }
+}
+
 export function startDemoSession(): UserProfile {
   if (typeof window !== 'undefined') {
     localStorage.setItem(DEMO_USER_STORAGE_KEY, JSON.stringify(DEMO_USER));
-    // Set cookie so Next.js middleware knows demo user is authenticated
     document.cookie = `${DEMO_COOKIE_NAME}=true; path=/; max-age=86400; SameSite=Lax`;
   }
   return DEMO_USER;
@@ -58,6 +118,7 @@ export async function signOut(): Promise<void> {
   if (typeof window !== 'undefined') {
     localStorage.removeItem(DEMO_USER_STORAGE_KEY);
     document.cookie = `${DEMO_COOKIE_NAME}=; path=/; max-age=0; SameSite=Lax`;
+    document.cookie = `sb-access-token=; path=/; max-age=0; SameSite=Lax`;
   }
 
   if (isSupabaseConfigured()) {
